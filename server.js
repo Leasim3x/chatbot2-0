@@ -11,7 +11,9 @@ const PORT =  3001;
 
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
+
+// express.json() Es un middleware que estaba leyendo el steam, ademas de bodyParser.json() - Solución: solo dejar uno.
+// app.use(bodyParser.json());
 
 // Ruta de verificación (GET)
 app.get("/webhook", verifyWebhook);
