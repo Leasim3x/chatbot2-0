@@ -1,0 +1,8 @@
+# Whatsapp - Meta
+API_KEY=""
+PHONE_NUMBER_ID=""
+VERSION=""
+
+# API mi_tienda (URL_BASE cambia cada vez que se ejecuta NGROK)
+URL_BASE=""
+LOC_CATALOGO=""

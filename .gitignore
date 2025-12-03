@@ -1,0 +1,10 @@
+# Archivo para las variables de entorno
+.env
+
+# Ignora la carpeta de módulos de Node
+node_modules/
+
+# Ignora archivos de registro específico en cualquier ubicación
+api_log.txt
+debug_post_log.txt
+template_log.txt
