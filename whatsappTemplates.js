@@ -11,7 +11,8 @@ const templates = {
   BUSCAR_PEDIDO: "buscar_pedido",
   PEDIDO_ENCONTRADO: "pedido_encontrado",
   PEDIDO_NO_ENCONTRADO: "pedido_no_encontrado",
-  MENSAJE_SALIDA: "mensaje_salida"
+  MENSAJE_SALIDA: "mensaje_salida",
+  ERROR_GENERICO: "error_generico"
 };
 
 // Utilidad para limpiar texto y asegurar longitud
@@ -31,7 +32,7 @@ function procesarNumero(to) {
   if (!to) throw new Error("Número de destinatario no válido");
   return to.startsWith("521") ? to.replace(/^521/, "52") : to;
 }
- 
+
 // Función genérica para construir y enviar payloads
 async function enviarPayload(to, templateName, components = []) {
   const url = `https://graph.facebook.com/${version}/${phoneNumberId}/messages`;
@@ -65,12 +66,29 @@ async function enviarPayload(to, templateName, components = []) {
 async function enviarPlantillaWhatsApp(to, templateName, text = "") {
   const components = text
     ? [
-        {
-          type: "body",
-          parameters: [{ type: "text", text: sanitize(text) }],
-        },
-      ]
+      {
+        type: "body",
+        parameters: [{ type: "text", text: sanitize(text) }],
+      },
+    ]
     : [];
+  await enviarPayload(to, templateName, components);
+}
+
+// Función para múltiples variables
+async function enviarPlantillaWhatsAppV2(to, templateName, variable = []) {
+  const components = [];
+
+  if(variable.length > 0) {
+    components.push({
+      type: "body",
+      parameters: variable.map( v => ({
+        type: "text",
+        text: sanitize(v)
+      }))
+    });
+  }
+
   await enviarPayload(to, templateName, components);
 }
 
