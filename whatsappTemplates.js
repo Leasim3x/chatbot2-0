@@ -49,6 +49,10 @@ async function enviarPayload(to, templateName, components = []) {
     },
   };
 
+  if (components.length > 0) {
+    payload.template.components = components;
+  }
+
   const headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
@@ -62,7 +66,30 @@ async function enviarPayload(to, templateName, components = []) {
   }
 }
 
-// Funciones específicas
+// Función para enviar plantillas simples (sin parametros)
+async function enviarPlantillaSimple(to, templateName) {
+  return enviarPayload(to, templateName);
+}
+
+// Función para enviar imagen PNG en HEADER
+async function enviarPlantillaConImagen(to, templateName, imageUrl) {
+  const components = [
+    {
+      type: "header",
+      parameters: [
+        {
+          type:"image",
+          image: { link: imageUrl }
+        }
+      ]
+    }
+  ];
+
+  return enviarPayload(to, templateName, components);
+  
+}
+
+// Funciones específicas con para el uso con una variable (plantilla original)
 async function enviarPlantillaWhatsApp(to, templateName, text = "") {
   const components = text
     ? [
@@ -73,9 +100,9 @@ async function enviarPlantillaWhatsApp(to, templateName, text = "") {
     ]
     : [];
   await enviarPayload(to, templateName, components);
-}
+}    
 
-// Función para múltiples variables
+// Función para múltiples variables Versión 2 de la plantilla enviarPlantillaWhatsApp
 async function enviarPlantillaWhatsAppV2(to, templateName, variable = []) {
   const components = [];
 
@@ -142,7 +169,10 @@ function logError(payload, error) {
 
 module.exports = {
   templates,
+  enviarPlantillaSimple,
+  enviarPlantillaConImagen,
   enviarPlantillaWhatsApp,
+  enviarPlantillaWhatsAppV2,
   enviarPlantillaErrorGenerico,
   enviarMensajeTexto,
 };

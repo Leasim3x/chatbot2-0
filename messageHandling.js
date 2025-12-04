@@ -2,13 +2,23 @@ const fs = require("fs");
 const path = require("path");
 const {
   templates,
+  enviarPlantillaSimple,
+  enviarPlantillaConImagen,
   enviarPlantillaWhatsApp,
+  enviarPlantillaWhatsAppV2,
   enviarPlantillaErrorGenerico,
   enviarMensajeTexto,
 } = require("./whatsappTemplates");
 
+
+// Armado de la ruta del recurso Catálogo
+const url_base = process.env.URL_BASE_DB;
+const loc_image = process.env.LOC_CATALOGO;
+const imageUrl = `${url_base}/${loc_image}`;
+
 // Aliases para mayor claridad
 const sendTemplateMessage = enviarPlantillaWhatsApp;
+const sendTemplateMessageV2 = enviarPlantillaWhatsAppV2;
 const sendTextMessage = enviarMensajeTexto;
 
 async function enviarPlantillaDesdeAPI({ from, url, templateName }) {
@@ -79,6 +89,7 @@ async function handleIncomingMessage(payload) {
 
   const from = message.from;
 
+  // Flujo definido según el tipo ("text" o "button")
   if (message.type === "text") {
     const body = message.text?.body?.toLowerCase() || "";
     if (body.includes("hola")) {

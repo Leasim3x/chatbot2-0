@@ -4,5 +4,5 @@ PHONE_NUMBER_ID=""
 VERSION=""
 
 # API mi_tienda (URL_BASE cambia cada vez que se ejecuta NGROK)
-URL_BASE=""
+URL_BASE_DB=""
 LOC_CATALOGO=""
