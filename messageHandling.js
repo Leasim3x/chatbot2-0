@@ -65,6 +65,10 @@ async function enviarPlantillaDesdeAPI({ from, url, templateName }) {
   }
 }
 
+async function sendImageWithMessage(to, templateName, imageUrl) {
+  return enviarPlantillaConImagen(to, templateName, imageUrl);
+}
+
 async function handleIncomingMessage(payload) {
   // Log de la solicitud entrante para depuración
   fs.appendFileSync(
@@ -91,23 +95,25 @@ async function handleIncomingMessage(payload) {
 
   // Flujo definido según el tipo ("text" o "button")
   if (message.type === "text") {
+    // Aqui se programar las palabras claves
     const body = message.text?.body?.toLowerCase() || "";
     if (body.includes("hola")) {
       await sendTemplateMessage(from, "menu_inicio");
     }
+    // Aqui se programan los botones
   } else if (message.type === "button" && message.button?.payload) {
     const btnPayload = message.button.payload.toLowerCase();
-    if (btnPayload === "ver menu de hoy") {
-      await enviarPlantillaDesdeAPI({
-        url: "https://grp-ia.com/bitacora-residentes/menu.php",
-        templateName: "menu_hoy",
+    if (btnPayload === "ver el cátalogo") {
+      await sendImageWithMessage(
         from,
-      });
+        "ver_catalogo",
+        imageUrl
+      );
     } else if (btnPayload === "ver ofertas del dia") {
       await enviarPlantillaDesdeAPI({
-        url: "https://grp-ia.com/bitacora-residentes/ofertas.php",
-        templateName: "ofertas_dia",
         from,
+        templateName: "ofertas_dia",
+        
       });
     } else if (btnPayload === "salir") {
       await sendTextMessage(from, "¡Gracias por visitarnos!");
