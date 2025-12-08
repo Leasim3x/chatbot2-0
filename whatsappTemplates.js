@@ -61,8 +61,10 @@ async function enviarPayload(to, templateName, components = []) {
   try {
     const response = await axios.post(url, payload, { headers });
     logExitoso(payload, response.data);
+    return response.data;   // ← 🔥🔥🔥 ¡RESPUESTA DEVUELTA!
   } catch (error) {
     logError(payload, error);
+    return null;
   }
 }
 
@@ -111,7 +113,7 @@ async function enviarPlantillaWhatsAppV2(to, templateName, variable = []) {
       type: "body",
       parameters: variable.map( v => ({
         type: "text",
-        text: sanitize(v)
+        text: sanitize(String(v))
       }))
     });
   }
