@@ -192,6 +192,35 @@ async function handleIncomingMessage(payload) {
       return;
     }
 
+    // Detectar Folio como tercera prioridad
+    if (body.startsWith("folio:")) {
+      const folio = Number(body.replace("folio:", "").trim());
+
+      // Realizamos la consulta de la compra a la API
+      const info = await obtenerCompraPorFolio(folio);
+
+      const compra = info.compras?.[0];
+
+      if (!compra) {
+        await sendTemplateMessage(from, "pedido_no_encontrado");
+        return;
+      }
+
+      // Se envian los datos junto al folio
+      await sendTemplateMessageV2(
+        from,
+        "pedido_encontrado",
+        [
+          String(compra.folio),
+          String(compra.nid),
+          String(compra.nombre),
+          String(compra.marca),
+          String(compra.precio)]
+      );
+
+      return;
+    }
+
     // Aqui se programan los botones
   } else if (message.type === "button" && message.button?.payload) {
     const btnPayload = message.button.payload
@@ -245,10 +274,10 @@ async function handleIncomingMessage(payload) {
         "compra_confirma",
         [
           String(compra.folio),
-          String(compra.nid) , 
-          String(compra.nombre), 
-          String(compra.marca), 
-          String(compra.precio), 
+          String(compra.nid),
+          String(compra.nombre),
+          String(compra.marca),
+          String(compra.precio),
           String(compra.pago)]
       );
 
